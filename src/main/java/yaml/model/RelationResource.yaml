@@ -1,0 +1,25 @@
+swagger: "2.0"
+definitions:
+  relationResource:
+    x-jcloud-module: renewal
+    title: RelationResource
+    type: object
+    properties:
+      resourceId:
+        type: string
+      resourceName:
+        type: string
+      serviceCode:
+        type: string
+      billingType:
+        type: integer
+      expireTime:
+        type: string
+      dataCenter:
+        type: string
+      autoRenew:
+        type: integer
+      lastTime:
+        type: integer
+      remark:
+        type: string

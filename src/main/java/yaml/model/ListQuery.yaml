@@ -1,0 +1,35 @@
+swagger: "2.0"
+definitions:
+  listQuery:
+    x-jcloud-module: renewal
+    title: ListQuery
+    type: object
+    properties:
+      expireTime:
+        type: string
+      serviceCode:
+        type: string
+      lastTime:
+        type: integer
+      resourceName:
+        type: string
+      resourceId:
+        type: string
+      dataCenter:
+        type: string
+      billingType:
+        type: integer
+      autoRenew:
+        type: integer
+      associateResource:
+        type: integer
+      renewTime:
+        type: integer
+      databaseType:
+        type: string
+      remark:
+        type: string
+      relationList:
+        type: array
+        items:
+          $ref: "../model/RelationResource.yaml#/definitions/relationResource"

@@ -1,0 +1,15 @@
+swagger: "2.0"
+definitions:
+  instanceCount:
+    x-jcloud-module: renewal
+    title: InstanceCount
+    type: object
+    properties:
+      instanceAll:
+        type: string
+      instanceExpired:
+        type: string
+      instanceRunning:
+        type: string
+      instanceToExpire:
+        type: string

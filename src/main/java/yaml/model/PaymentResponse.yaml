@@ -1,0 +1,11 @@
+swagger: "2.0"
+definitions:
+  paymentResponse:
+    x-jcloud-module: renewal
+    title: PaymentResponse
+    type: object
+    properties:
+      orderNumber:
+        type: string
+      returnURL:
+        type: string
