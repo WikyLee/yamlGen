@@ -1,0 +1,24 @@
+swagger: "2.0"
+definitions:
+  testVo:
+    x-jcloud-module: renewal
+    title: TestVo
+    type: object
+    properties:
+      name:
+        type: string
+      age:
+        type: integer
+      serviceTerm:
+        $ref: "../model/ServiceTerm.yaml#/definitions/serviceTerm"
+      serviceTermList:
+        type: array
+        items:
+          $ref: "../model/ServiceTerm.yaml#/definitions/serviceTerm"
+      stringList:
+        type: array
+        items:
+          type: string
+      createTime:
+        type: string
+        format: date-time
