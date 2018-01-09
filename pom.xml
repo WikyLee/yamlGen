@@ -7,6 +7,14 @@
     <groupId>jcloud</groupId>
     <artifactId>yaml.gen</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <dependencies>
+
+        <dependency>
+            <groupId>com.jcloud.billing</groupId>
+            <artifactId>billing-jcloud-fs</artifactId>
+            <version>2.0.10-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
 
 
 </project>
