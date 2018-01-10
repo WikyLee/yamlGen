@@ -1,5 +1,6 @@
 package utils.service;
 
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -83,12 +84,12 @@ public class YamlServiceUtils {
             writeNewLine(bufferedWriter, "    post:");
         }
         message = "      operationId: " + message.split("/")[1];
-
+        writeNewLine(bufferedWriter, message);
         //写入请求参数
         Parameter[] parameters = method.getParameters();
         writeParams(bufferedWriter, parameters);
 
-        writeNewLine(bufferedWriter, message);
+
         writeNewLine(bufferedWriter, "      responses:");
         writeNewLine(bufferedWriter, "        200:");
         writeNewLine(bufferedWriter, "          description: OK");
@@ -115,19 +116,20 @@ public class YamlServiceUtils {
             return;
         } else {
 
-            for (Parameter parameter : parameters){
+            for (Parameter parameter : parameters) {
                 RequestParam requestParam = parameter.getAnnotation(RequestParam.class);
-                if (requestParam != null) {
-                    writeNewLine(bufferedWriter,"      parameters:");
+                RequestBody requestBody = parameter.getAnnotation(RequestBody.class);
+                if (requestParam != null || requestBody != null) {
+                    writeNewLine(bufferedWriter, "      parameters:");
                     break;
                 }
             }
 
 
-
             for (Parameter parameter : parameters) {
                 RequestParam requestParam = parameter.getAnnotation(RequestParam.class);
-                if (requestParam != null) {
+                RequestBody requestBody = parameter.getAnnotation(RequestBody.class);
+                if (requestParam != null || requestBody != null) {
                     writeParam(bufferedWriter, parameter);
                 }
             }
@@ -136,20 +138,35 @@ public class YamlServiceUtils {
 
     public static void writeParam(BufferedWriter bufferedWriter, Parameter parameter) throws Exception {
         RequestParam requestParam = parameter.getAnnotation(RequestParam.class);
-        String name = requestParam.value();
-        boolean required = requestParam.required();
-        if (parameter.getType().getSimpleName().equals("Map")){
-            writeNewLine(bufferedWriter,"        - name: filters");
-            writeNewLine(bufferedWriter,"          in: query");
-            writeNewLine(bufferedWriter,"          type: array");
-            writeNewLine(bufferedWriter,"          items:");
-            writeNewLine(bufferedWriter,"            $ref: \"../../common/model/Filter.yaml#/definitions/filter\"");
-        }else{
-            writeNewLine(bufferedWriter,"        - name: "+name);
-            writeNewLine(bufferedWriter,"          in: query");
-            writeNewLine(bufferedWriter,"          type: "+parameter.getType().getSimpleName().toLowerCase());
-            writeNewLine(bufferedWriter,"          required: "+required);
+        if (requestParam!=null){
+            String name = requestParam.value();
+            boolean required = requestParam.required();
+            if (parameter.getType().getSimpleName().equals("Map")) {
+                writeNewLine(bufferedWriter, "        - name: filters");
+                writeNewLine(bufferedWriter, "          in: query");
+                writeNewLine(bufferedWriter, "          type: array");
+                writeNewLine(bufferedWriter, "          items:");
+                writeNewLine(bufferedWriter, "            $ref: \"../../common/model/Filter.yaml#/definitions/filter\"");
+            } else {
+                writeNewLine(bufferedWriter, "        - name: " + name);
+                writeNewLine(bufferedWriter, "          in: query");
+                writeNewLine(bufferedWriter, "          type: " + parameter.getType().getSimpleName().toLowerCase());
+                writeNewLine(bufferedWriter, "          required: " + required);
+            }
         }
+        RequestBody requestBody = parameter.getAnnotation(RequestBody.class);
+        if (requestBody!=null){
+            boolean required = requestBody.required();
+            String name = parameter.getType().getSimpleName();
+            String nameLow = name.substring(0,1).toLowerCase()+name.substring(1);
+            writeNewLine(bufferedWriter,"        - name: "+nameLow);
+            writeNewLine(bufferedWriter,"          in: body");
+            writeNewLine(bufferedWriter,"          schema:");
+            writeNewLine(bufferedWriter,"            $ref: "+"\"../model/"+name+".yaml#/definitions/"+nameLow+"\"");
+
+        }
+
+
 
     }
 

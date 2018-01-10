@@ -4,22 +4,9 @@ info:
   description: API related to Renewal
 basePath: /renewal
 paths:
-  "/queryServiceTerm/{serviceCode}":
-    get:
-      operationId: queryServiceTerm
-      responses:
-        200:
-          description: OK
-          schema:
-            properties:
-              result:
-                $ref: "../model/ServiceTerm.yaml#/definitions/serviceTerm"
-              requestId:
-                type: string
-        404:
-          description: NOT_FOUND
   "/query/{serviceCode}":
     get:
+      operationId: query
       parameters:
         - name: filters
           in: query
@@ -34,7 +21,52 @@ paths:
           in: query
           type: integer
           required: true
-      operationId: query
+      responses:
+        200:
+          description: OK
+          schema:
+            properties:
+              result:
+                $ref: "../model/ServiceTerm.yaml#/definitions/serviceTerm"
+              requestId:
+                type: string
+        404:
+          description: NOT_FOUND
+  "/queryServiceTerm/{serviceCode}":
+    get:
+      operationId: queryServiceTerm
+      responses:
+        200:
+          description: OK
+          schema:
+            properties:
+              result:
+                $ref: "../model/ServiceTerm.yaml#/definitions/serviceTerm"
+              requestId:
+                type: string
+        404:
+          description: NOT_FOUND
+  "/postQuery/{serviceCode}":
+    post:
+      operationId: postQuery
+      parameters:
+        - name: filters
+          in: query
+          type: array
+          items:
+            $ref: "../../common/model/Filter.yaml#/definitions/filter"
+        - name: pageNumber
+          in: query
+          type: integer
+          required: false
+        - name: pageSize
+          in: query
+          type: integer
+          required: true
+        - name: serviceTerm
+          in: body
+          schema:
+            $ref: "../model/ServiceTerm.yaml#/definitions/serviceTerm"
       responses:
         200:
           description: OK
