@@ -8,10 +8,10 @@ import java.util.List;
  * yamlgen
  * Created by wangzhilei3 on 2018/1/9.
  */
-public class ClassUtils {
+public class ServiceClassUtils {
     public static List<Class> getcClassList(String path) {
         if (path == null) {
-            path = "E:\\yamlgen\\src\\main\\java\\model";
+            path = "E:\\yamlgen\\src\\main\\java\\service";
         }
         File file = new File(path);
         file.isDirectory();
@@ -22,7 +22,7 @@ public class ClassUtils {
                 String name = file1.getAbsolutePath();
                 name = file1.getName();
                 name = name.substring(0,name.length()-5);
-                result.add(Class.forName("model." + name));
+                result.add(Class.forName("service." + name));
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }

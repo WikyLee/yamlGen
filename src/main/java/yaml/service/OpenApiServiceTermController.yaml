@@ -1,0 +1,48 @@
+swagger: "2.0"
+info:
+  title: JCLOUD Renewal API
+  description: API related to Renewal
+basePath: /renewal
+paths:
+  "/queryServiceTerm/{serviceCode}":
+    get:
+      operationId: queryServiceTerm
+      responses:
+        200:
+          description: OK
+          schema:
+            properties:
+              result:
+                $ref: "../model/ServiceTerm.yaml#/definitions/serviceTerm"
+              requestId:
+                type: string
+        404:
+          description: NOT_FOUND
+  "/query/{serviceCode}":
+    get:
+      parameters:
+        - name: filters
+          in: query
+          type: array
+          items:
+            $ref: "../../common/model/Filter.yaml#/definitions/filter"
+        - name: pageNumber
+          in: query
+          type: integer
+          required: false
+        - name: pageSize
+          in: query
+          type: integer
+          required: true
+      operationId: query
+      responses:
+        200:
+          description: OK
+          schema:
+            properties:
+              result:
+                $ref: "../model/ServiceTerm.yaml#/definitions/serviceTerm"
+              requestId:
+                type: string
+        404:
+          description: NOT_FOUND

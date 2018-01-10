@@ -1,5 +1,6 @@
 package model;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -15,6 +16,15 @@ public class TestVo {
     private List<ServiceTerm> serviceTermList;
     private List<String> stringList;
     private Date createTime;
+    private BigDecimal price;
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
 
     public Date getCreateTime() {
         return createTime;

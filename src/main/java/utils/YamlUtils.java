@@ -12,6 +12,7 @@ import java.util.List;
 /**
  * yamlgen
  * Created by wangzhilei3 on 2018/1/9.
+ *
  * @since 1.6+
  */
 
@@ -95,7 +96,7 @@ public class YamlUtils {
      */
     public static void writeFiled(BufferedWriter outputStream, Field field) throws Exception {
         String name = field.getType().getSimpleName();
-        if (name.equals("String") || name.equals("Integer") || name.equals("Integer")||name.equals("int")) {
+        if (name.equals("String") || name.equals("Integer") || name.equals("Integer") || name.equals("int") || name.equals("BigDecimal")) {
             writeBasicFiled(outputStream, field);
         } else if (field.getType().getPackage().getName().equals("model")) {
             writeObjectFiled(outputStream, field);
@@ -114,15 +115,15 @@ public class YamlUtils {
      * @throws Exception
      */
     public static void writeBasicFiled(BufferedWriter outputStream, Field field) throws Exception {
-        if (field.getType().getSimpleName().equals("int")){
-            outputStream.write(("      " + field.getName() + ":"));
-            outputStream.newLine();
-            String s = field.getType().getSimpleName().toLowerCase();
+        outputStream.write(("      " + field.getName() + ":"));
+        outputStream.newLine();
+        if (field.getType().getSimpleName().equals("int")) {
             outputStream.write(("        type: " + "integer"));
             outputStream.newLine();
-        }else {
-            outputStream.write(("      " + field.getName() + ":"));
+        } else if (field.getType().getSimpleName().equals("BigDecimal")) {
+            outputStream.write(("        type: " + "string"));
             outputStream.newLine();
+        } else {
             String s = field.getType().getSimpleName().toLowerCase();
             outputStream.write(("        type: " + s));
             outputStream.newLine();
