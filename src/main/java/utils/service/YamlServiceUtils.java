@@ -1,9 +1,6 @@
 package utils.service;
 
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -13,7 +10,10 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @since 1.6+
@@ -47,10 +47,11 @@ public class YamlServiceUtils {
 
         //根据方法写入信息
         Method[] methods = c.getDeclaredMethods();
+        List<PathVariable> pathVariableList = new ArrayList<PathVariable>();
         for (Method method : methods) {
-            writeMethod(bufferedWriter, method);
+            writeMethod(bufferedWriter, method, pathVariableList);
         }
-
+        writePathParams(bufferedWriter, pathVariableList);
         bufferedWriter.flush();
         bufferedWriter.close();
 
@@ -73,7 +74,7 @@ public class YamlServiceUtils {
      * @param method
      * @throws Exception
      */
-    public static void writeMethod(BufferedWriter bufferedWriter, Method method) throws Exception {
+    public static void writeMethod(BufferedWriter bufferedWriter, Method method, List<PathVariable> pathVariableList) throws Exception {
         RequestMapping requestMapping = (RequestMapping) method.getAnnotation(RequestMapping.class);
         String message = requestMapping.path()[0];
 
@@ -83,7 +84,15 @@ public class YamlServiceUtils {
         } else {
             writeNewLine(bufferedWriter, "    post:");
         }
+        String[] strings = message.split(":");
+        String action = null;
+        if (strings != null && strings.length > 1 && strings[strings.length - 1] != null) {
+            action = strings[strings.length - 1];
+        }
         message = "      operationId: " + message.split("/")[1];
+        if (action!=null){
+            message = message+action;
+        }
         writeNewLine(bufferedWriter, message);
         //写入请求参数
         Parameter[] parameters = method.getParameters();
@@ -109,6 +118,47 @@ public class YamlServiceUtils {
         writeNewLine(bufferedWriter, "                type: string");
         writeNewLine(bufferedWriter, "        404:");
         writeNewLine(bufferedWriter, "          description: NOT_FOUND");
+        pathVariableList.addAll(getPathParams(parameters));
+
+
+    }
+
+    public static List<PathVariable> getPathParams(Parameter[] parameters) throws Exception {
+        if (parameters == null || parameters.length == 0) {
+            return null;
+        } else {
+            List<PathVariable> pathVariableList = new ArrayList<PathVariable>();
+
+            for (Parameter parameter : parameters) {
+                PathVariable pathVariable = parameter.getAnnotation(PathVariable.class);
+
+                if (pathVariable != null) {
+                    pathVariableList.add(pathVariable);
+                }
+            }
+            return pathVariableList;
+        }
+    }
+
+    public static void writePathParams(BufferedWriter bufferedWriter, List<PathVariable> pathVariableList) throws Exception {
+        if (pathVariableList == null || pathVariableList.size() == 0) {
+            return;
+        }
+        Set<String> nameSet = new HashSet<String>();
+        writeNewLine(bufferedWriter, "parameters:");
+        for (PathVariable pathVariable : pathVariableList) {
+
+            String name = pathVariable.value();
+            if (nameSet.contains(name)) {
+                break;
+            }
+            writeNewLine(bufferedWriter, "  " + name + ":");
+            writeNewLine(bufferedWriter, "    name: " + name);
+            writeNewLine(bufferedWriter, "    in: path");
+            writeNewLine(bufferedWriter, "    required: true");
+            writeNewLine(bufferedWriter, "    type: string");
+            nameSet.add(name);
+        }
     }
 
     public static void writeParams(BufferedWriter bufferedWriter, Parameter[] parameters) throws Exception {
@@ -138,7 +188,7 @@ public class YamlServiceUtils {
 
     public static void writeParam(BufferedWriter bufferedWriter, Parameter parameter) throws Exception {
         RequestParam requestParam = parameter.getAnnotation(RequestParam.class);
-        if (requestParam!=null){
+        if (requestParam != null) {
             String name = requestParam.value();
             boolean required = requestParam.required();
             if (parameter.getType().getSimpleName().equals("Map")) {
@@ -155,17 +205,16 @@ public class YamlServiceUtils {
             }
         }
         RequestBody requestBody = parameter.getAnnotation(RequestBody.class);
-        if (requestBody!=null){
+        if (requestBody != null) {
             boolean required = requestBody.required();
             String name = parameter.getType().getSimpleName();
-            String nameLow = name.substring(0,1).toLowerCase()+name.substring(1);
-            writeNewLine(bufferedWriter,"        - name: "+nameLow);
-            writeNewLine(bufferedWriter,"          in: body");
-            writeNewLine(bufferedWriter,"          schema:");
-            writeNewLine(bufferedWriter,"            $ref: "+"\"../model/"+name+".yaml#/definitions/"+nameLow+"\"");
+            String nameLow = name.substring(0, 1).toLowerCase() + name.substring(1);
+            writeNewLine(bufferedWriter, "        - name: " + nameLow);
+            writeNewLine(bufferedWriter, "          in: body");
+            writeNewLine(bufferedWriter, "          schema:");
+            writeNewLine(bufferedWriter, "            $ref: " + "\"../model/" + name + ".yaml#/definitions/" + nameLow + "\"");
 
         }
-
 
 
     }

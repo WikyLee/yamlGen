@@ -4,9 +4,9 @@ info:
   description: API related to Renewal
 basePath: /renewal
 paths:
-  "/query/{serviceCode}":
+  "/query/{serviceCode}:delete":
     get:
-      operationId: query
+      operationId: querydelete
       parameters:
         - name: filters
           in: query
@@ -78,3 +78,9 @@ paths:
                 type: string
         404:
           description: NOT_FOUND
+parameters:
+  serviceCode:
+    name: serviceCode
+    in: path
+    required: true
+    type: string
