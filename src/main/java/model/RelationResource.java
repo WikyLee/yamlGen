@@ -1,8 +1,5 @@
 package model;
 
-import com.jcloud.billing.fs.resourceorder.vo.ResourceOrderVo;
-
-import java.util.Date;
 
 /**
  * Created by zhaojunqiang on 2017/5/9.
@@ -21,16 +18,6 @@ public class RelationResource {
     public RelationResource() {
     }
 
-    public RelationResource(ResourceOrderVo resourceOrderVo) {
-        this.resourceId = resourceOrderVo.getResourceId();
-        this.serviceCode = resourceOrderVo.getServiceCode();
-        this.dataCenter = resourceOrderVo.getRegion();
-        this.billingType = resourceOrderVo.getBillingType();
-        if (resourceOrderVo.getBillingType() == 3 && resourceOrderVo.getEndTime() != null) {
-            this.expireTime = String.valueOf(resourceOrderVo.getEndTime().getTime());
-            this.lastTime = (int) ((resourceOrderVo.getEndTime().getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24));
-        }
-    }
 
     public String getRemark() {
         return remark;

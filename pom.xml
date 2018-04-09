@@ -10,11 +10,6 @@
     <dependencies>
 
         <dependency>
-            <groupId>com.jcloud.billing</groupId>
-            <artifactId>billing-jcloud-fs</artifactId>
-            <version>2.0.10-SNAPSHOT</version>
-        </dependency>
-        <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
             <version>4.3.2.RELEASE</version>
